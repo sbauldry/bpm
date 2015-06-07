@@ -1,5 +1,5 @@
 # bpm
-This repository contains Stata and Mplus code for an analysis of measurement error in readings of blood pressure. The analysis uses data from the Cebu Longitudinal Health and Nutrition Survey (CLHNS). Information about obtaining CLHNS data can be found at xxxx. The results are reported in Bauldry, Bollen, and Adair (2015).
+This repository contains Stata and Mplus code for an analysis of measurement error in readings of blood pressure. The analysis uses data from the Cebu Longitudinal Health and Nutrition Survey (CLHNS). Information about obtaining CLHNS data can be found at http://www.cpc.unc.edu/projects/cebu. The results are reported in Bauldry, Bollen, and Adair (2015).
 
 ## Files
 1. bpm-data-2.do: Stata program that prepares CLHNS data for analysis.
