@@ -3,9 +3,11 @@ DATA: FILE = "bpm-data-2.txt";
 VARIABLE: NAMES = age1 age2 age3 basebrgy dbp11 dbp21 dbp31 dbp12 dbp22
     dbp32 dbp13 dbp23 dbp33 sbp11 sbp21 sbp31 sbp12 sbp22 sbp32 sbp13 
     sbp23 sbp33 male uncchdid;
-  USEVAR = dbp11-sbp33;
+  USEVAR = dbp12 dbp22 dbp32 sbp12 sbp22 sbp32;
   USEOBS = male == 0;
   MISSING = ALL(-9);
+  CLUSTER = basebrgy;
+ANALYSIS: TYPE = COMPLEX;
 MODEL:
   SBP BY sbp22@1 sbp12@1 sbp32@1;
   [SBP*]; [sbp22@0];
@@ -22,4 +24,4 @@ MODEL:
   M2 WITH M3@0 SBP@0 DBP@0;
   M3 WITH SBP@0 DBP@0;
 
-OUTPUT: STDYX;
+OUTPUT: STDYX FSCOEFFICIENT FSDETERMINACY PATTERNS;
