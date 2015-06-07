@@ -1,0 +1,25 @@
+TITLE: BP Measurement Model;
+DATA: FILE = "bpm-data-2.txt";
+VARIABLE: NAMES = age1 age2 age3 basebrgy dbp11 dbp21 dbp31 dbp12 dbp22
+    dbp32 dbp13 dbp23 dbp33 sbp11 sbp21 sbp31 sbp12 sbp22 sbp32 sbp13 
+    sbp23 sbp33 male uncchdid;
+  USEVAR = dbp11-sbp33;
+  USEOBS = male == 0;
+  MISSING = ALL(-9);
+MODEL:
+  SBP BY sbp21@1 sbp11@1 sbp31@1;
+  [SBP*]; [sbp21@0]; [sbp11@0]; [sbp31@0];
+
+  DBP BY dbp21@1 dbp11@1 dbp31@1;
+  [DBP*]; [dbp21@0]; [dbp11@0]; [dbp31@0];
+
+  M1 BY sbp11@1 dbp11@1;
+  M2 BY sbp21@1 dbp21@1;
+  M3 BY sbp31@1 dbp31@1;
+  [M1@0]; [M2@0]; [M3@0];
+
+  M1 WITH M2@0 M3@0 SBP@0 DBP@0;
+  M2 WITH M3@0 SBP@0 DBP@0;
+  M3 WITH SBP@0 DBP@0;
+
+OUTPUT: STDYX;

@@ -1,0 +1,241 @@
+TITLE: BP CFA;
+DATA: FILE = "bpm-data-2.txt";
+VARIABLE: NAMES = age1 age2 age3 basebrgy dbp11 dbp21 dbp31 dbp12 dbp22
+    dbp32 dbp13 dbp23 dbp33 sbp11 sbp21 sbp31 sbp12 sbp22 sbp32 sbp13 
+    sbp23 sbp33 male uncchdid;
+  USEVAR = dbp11-sbp33;
+  GROUPING = male(0 = female 1 = male);
+  MISSING = ALL(-9);
+  CLUSTER = basebrgy;
+ANALYSIS: TYPE = COMPLEX;
+MODEL:
+  !Wave 1
+  SBP1 BY sbp21@1 sbp11@1 sbp31@1;
+  [sbp21@0]; [sbp11@0]; [sbp31@0];
+
+  DBP1 BY dbp21@1 dbp11@1 dbp31@1;
+  [dbp21@0]; [dbp11@0]; [dbp31@0];
+
+  M11 BY sbp11@1 dbp11@1;
+  M21 BY sbp21@1 dbp21@1;
+  M31 BY sbp31@1 dbp31@1;
+  [M11@0]; [M21@0]; [M31@0];
+
+
+  !Wave 2
+  SBP2 BY sbp22@1 sbp12@1 sbp32@1;
+  [sbp22@0]; [sbp12@0]; [sbp32@0];
+
+  DBP2 BY dbp22@1 dbp12@1 dbp32@1;
+  [dbp22@0]; [dbp12@0]; [dbp32@0];
+
+  M12 BY sbp12@1 dbp12@1;
+  M22 BY sbp22@1 dbp22@1;
+  M32 BY sbp32@1 dbp32@1;
+  [M12@0]; [M22@0]; [M32@0];
+
+
+  !Wave 3
+  SBP3 BY sbp23@1 sbp13@1 sbp33@1;
+  [sbp23@0]; [sbp13@0]; [sbp33@0];
+
+  DBP3 BY dbp23@1 dbp13@1 dbp33@1;
+  [dbp23@0]; [dbp13@0]; [dbp33@0];
+
+  M13 BY sbp13@1 dbp13@1;
+  M23 BY sbp23@1 dbp23@1;
+  M33 BY sbp33@1 dbp33@1;
+  [M13@0]; [M23@0]; [M33@0];
+
+  
+!Correlations between method factors and blood pressure
+  M11 WITH M21@0 M31@0 M12@0 M22@0 M32@0 M13@0 M23@0 M33@0;
+  M21 WITH M31@0 M12@0 M22@0 M32@0 M13@0 M23@0 M33@0;
+  M31 WITH M12@0 M22@0 M32@0 M13@0 M23@0 M33@0;
+  M12 WITH M22@0 M32@0 M13@0 M23@0 M33@0;
+  M22 WITH M32@0 M13@0 M23@0 M33@0;
+  M32 WITH M13@0 M23@0 M33@0;
+  M13 WITH M23@0 M33@0;
+  M23 WITH M33@0;
+
+  M11 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M21 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M31 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M12 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M22 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M32 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M13 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M23 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M33 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+
+
+MODEL female:
+  !Wave 1
+  SBP1 BY sbp21@1 sbp11@1 sbp31@1;
+  [sbp21@0]; [sbp11@0]; [sbp31@0];
+
+  DBP1 BY dbp21@1 dbp11@1 dbp31@1;
+  [dbp21@0]; [dbp11@0]; [dbp31@0];
+
+  M11 BY sbp11@1 dbp11@1;
+  M21 BY sbp21@1 dbp21@1;
+  M31 BY sbp31@1 dbp31@1;
+  [M11@0]; [M21@0]; [M31@0];
+
+  !Wave 1 starting values from individual models
+  SBP1 WITH DBP1*41.7;
+  SBP1*78.7; DBP1*54.0;
+  [SBP1*97.3]; [DBP1*66.1];
+  dbp11*0.3; dbp21*0.2; dbp31*0.5;
+  sbp11*0.02; sbp21*0.1; sbp31*0.01;
+  M11*0; M21*0; M31*0;
+
+
+  !Wave 2
+  SBP2 BY sbp22@1 sbp12@1 sbp32@1;
+  [sbp22@0]; [sbp12@0]; [sbp32@0];
+
+  DBP2 BY dbp22@1 dbp12@1 dbp32@1;
+  [dbp22@0]; [dbp12@0]; [dbp32@0];
+
+  M12 BY sbp12@1 dbp12@1;
+  M22 BY sbp22@1 dbp22@1;
+  M32 BY sbp32@1 dbp32@1;
+  [M12@0]; [M22@0]; [M32@0];
+
+  !Wave 2 starting values from individual models
+  SBP2 WITH DBP2*49.2;
+  SBP2*83.6; DBP2*68.8;
+  [SBP2*99.0]; [DBP2*65.0];
+  dbp12*4.6; dbp22*2.5; dbp32*3.4;
+  sbp12*5.4; sbp22*3.1; sbp32*3.0;
+  M12*0.6; M22*0.6; M32*0.3;
+
+
+  !Wave 3
+  SBP3 BY sbp23@1 sbp13@1 sbp33@1;
+  [sbp23@0]; [sbp13@0]; [sbp33@0];
+
+  DBP3 BY dbp23@1 dbp13@1 dbp33@1;
+  [dbp23@0]; [dbp13@0]; [dbp33@0];
+
+  M13 BY sbp13@1 dbp13@1;
+  M23 BY sbp23@1 dbp23@1;
+  M33 BY sbp33@1 dbp33@1;
+  [M13@0]; [M23@0]; [M33@0];
+
+  !Wave 3 starting values from individual models
+  SBP3 WITH DBP3*57.4;
+  SBP3*100.3; DBP3*71.8;
+  [SBP3*99.3]; [DBP3*68.2];
+  dbp13*2.6; dbp23*1.1; dbp33*2.6;
+  sbp13*2.0; sbp23*2.8; sbp33*1.7;
+  M13*0.3; M23*0.3; M33*0.4;
+
+
+  !Correlations between method factors and blood pressure
+  M11 WITH M21@0 M31@0 M12@0 M22@0 M32@0 M13@0 M23@0 M33@0;
+  M21 WITH M31@0 M12@0 M22@0 M32@0 M13@0 M23@0 M33@0;
+  M31 WITH M12@0 M22@0 M32@0 M13@0 M23@0 M33@0;
+  M12 WITH M22@0 M32@0 M13@0 M23@0 M33@0;
+  M22 WITH M32@0 M13@0 M23@0 M33@0;
+  M32 WITH M13@0 M23@0 M33@0;
+  M13 WITH M23@0 M33@0;
+  M23 WITH M33@0;
+
+  M11 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M21 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M31 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M12 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M22 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M32 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M13 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M23 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M33 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+
+
+MODEL male:
+  !Wave 1
+  SBP1 BY sbp21@1 sbp11@1 sbp31@1;
+  [sbp21@0]; [sbp11@0]; [sbp31@0];
+
+  DBP1 BY dbp21@1 dbp11@1 dbp31@1;
+  [dbp21@0]; [dbp11@0]; [dbp31@0];
+
+  M11 BY sbp11@1 dbp11@1;
+  M21 BY sbp21@1 dbp21@1;
+  M31 BY sbp31@1 dbp31@1;
+  [M11@0]; [M21@0]; [M31@0];
+
+  !Wave 1 starting values from individual models
+  SBP1 WITH DBP1*61.2;
+  SBP1*117.3; DBP1*80.6;
+  [SBP1*106.0]; [DBP1*69.5];
+  dbp11*0.5; dbp21*0.04; dbp31*0.2;
+  sbp11*0.3; sbp21*0.2; sbp31*0.2;
+  M11*0.1; M21*0.1; M31*0.1;
+
+
+  !Wave 2
+  SBP2 BY sbp22@1 sbp12@1 sbp32@1;
+  [sbp22@0]; [sbp12@0]; [sbp32@0];
+
+  DBP2 BY dbp22@1 dbp12@1 dbp32@1;
+  [dbp22@0]; [dbp12@0]; [dbp32@0];
+
+  M12 BY sbp12@1 dbp12@1;
+  M22 BY sbp22@1 dbp22@1;
+  M32 BY sbp32@1 dbp32@1;
+  [M12@0]; [M22@0]; [M32@0];
+
+  !Wave 2 starting values from individual models
+  SBP2 WITH DBP2*56.9;
+  SBP2*116.4; DBP2*85.7;
+  [SBP2*106.4]; [DBP2*68.8];
+  dbp12*5.6; dbp22*2.7; dbp32*2.8;
+  sbp12*6.0; sbp22*2.5; sbp32*5.0;
+  M12*0.7; M22*0.0; M32*0.9;
+
+  
+  !Wave 3
+  SBP3 BY sbp23@1 sbp13@1 sbp33@1;
+  [sbp23@0]; [sbp13@0]; [sbp33@0];
+
+  DBP3 BY dbp23@1 dbp13@1 dbp33@1;
+  [dbp23@0]; [dbp13@0]; [dbp33@0];
+
+  M13 BY sbp13@1 dbp13@1;
+  M23 BY sbp23@1 dbp23@1;
+  M33 BY sbp33@1 dbp33@1;
+  [M13@0]; [M23@0]; [M33@0];
+
+  !Wave 3 starting values from individual models
+  SBP3 WITH DBP3*58.4;
+  SBP3*113.5; DBP3*85.2;
+  [SBP3*112.2]; [DBP3*76.6];
+  dbp13*2.1; dbp23*1.7; dbp33*1.0;
+  sbp13*2.8; sbp23*2.6; sbp33*1.9;
+  M13*0.3; M23*0.3; M33*0.4;
+
+
+  !Correlations between method factors and blood pressure
+  M11 WITH M21@0 M31@0 M12@0 M22@0 M32@0 M13@0 M23@0 M33@0;
+  M21 WITH M31@0 M12@0 M22@0 M32@0 M13@0 M23@0 M33@0;
+  M31 WITH M12@0 M22@0 M32@0 M13@0 M23@0 M33@0;
+  M12 WITH M22@0 M32@0 M13@0 M23@0 M33@0;
+  M22 WITH M32@0 M13@0 M23@0 M33@0;
+  M32 WITH M13@0 M23@0 M33@0;
+  M13 WITH M23@0 M33@0;
+  M23 WITH M33@0;
+
+  M11 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M21 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M31 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M12 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M22 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M32 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M13 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M23 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+  M33 WITH SBP1@0 SBP2@0 SBP3@0 DBP1@0 DBP2@0 DBP3@0;
+
+OUTPUT: STDYX;
